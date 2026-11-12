@@ -10,11 +10,11 @@ Calendário editorial da Supply Marketing para planejar, revisar e aprovar publi
 
 ## Como abrir no computador
 
-Abra o `index.html` no navegador, ou sirva a pasta com qualquer servidor estático.
+Abra o `public/index.html` no navegador, ou sirva a pasta `public` com qualquer servidor estático.
 
 ## Publicação
 
-A Vercel publica este repositório sem configuração extra: o `index.html` na raiz é a página inicial. O `vercel.json` só adiciona cabeçalhos de segurança e impede a indexação por buscadores.
+A Vercel publica só a pasta `public` (padrão dela quando a pasta existe). Scripts e estrutura do banco não ficam acessíveis pelo site. O `vercel.json` só adiciona cabeçalhos de segurança e impede a indexação por buscadores.
 
 ## Próximas etapas
 
