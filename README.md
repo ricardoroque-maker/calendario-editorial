@@ -28,6 +28,20 @@ A Vercel publica este repositório sem configuração extra: o `index.html` na r
 
 Depois: vários clientes no mesmo projeto, cada um com suas cores, logo e acessos.
 
+## Banco de dados (Supabase)
+
+- `supabase/migrations/`: estrutura do banco, permissões e armazenamento das artes, em ordem.
+- `supabase/tests/`: testes das permissões. Rodam numa transação desfeita no final, então nada fica gravado.
+- `supabase/config.public.json`: endereço do projeto e chave publishable, que são públicos.
+
+Para aplicar e testar a partir deste computador (Node 20 ou mais novo):
+
+1. Crie o arquivo `calendario-editorial.env` na sua pasta de usuário (fora do OneDrive), com a linha `SUPABASE_DB_URL=` seguida da conexão "Session pooler" do Supabase, já com a senha.
+2. O certificado público do Supabase já está em `supabase/prod-ca-2021.crt`. A conexão é verificada com ele.
+3. Rode `npm install`, depois `npm run db:check`, `npm run db:migrate`, `npm run db:test` e, para ver o estado do banco, `npm run db:status`.
+
+Projeto Supabase na região São Paulo (`sa-east-1`).
+
 ## Segurança
 
 Chaves e credenciais nunca entram no repositório. Elas ficam nas variáveis de ambiente da Vercel e do Supabase, ou em um `.env.local` que o `.gitignore` já bloqueia.

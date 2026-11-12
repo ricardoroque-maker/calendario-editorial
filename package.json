@@ -1,0 +1,15 @@
+{
+  "name": "calendario-editorial",
+  "private": true,
+  "type": "module",
+  "description": "Calendário editorial da Supply Marketing",
+  "scripts": {
+    "db:check": "node scripts/db.mjs check",
+    "db:status": "node scripts/db.mjs status",
+    "db:migrate": "node scripts/db.mjs migrate",
+    "db:test": "node scripts/db.mjs test"
+  },
+  "devDependencies": {
+    "pg": "^8.23.1"
+  }
+}
