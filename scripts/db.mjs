@@ -7,6 +7,10 @@
 //   node scripts/db.mjs check            confere a conexão
 //   node scripts/db.mjs migrate          aplica as migrações pendentes de supabase/migrations
 //   node scripts/db.mjs test [arquivo]   roda os testes (ou um arquivo) e desfaz tudo no final
+//   node scripts/db.mjs status           mostra quantos calendários, posts e acessos existem
+//   node scripts/db.mjs acessos          lista quem tem acesso a cada calendário
+//   node scripts/db.mjs acesso <e-mail> <admin|editor|revisor|remover> [cargo] [calendário]
+//                                        libera, muda ou tira o acesso de quem já entrou uma vez no site
 import pg from 'pg';
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { join, dirname, basename } from 'node:path';
@@ -141,9 +145,55 @@ async function status() {
   await c.end();
 }
 
-const [cmd, arg] = process.argv.slice(2);
+const ROLES = { admin: 'admin', editor: 'editor', revisor: 'reviewer', reviewer: 'reviewer', remover: 'remove' };
+const CARGOS = { coordenacao: 'Coordenação', gerencia: 'Gerência', diretoria: 'Diretoria' };
+const plain = v => String(v || '').normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase().trim();
+
+async function listAccess() {
+  const c = await connect();
+  const { rows } = await c.query(`select m.calendar_id, u.email, p.full_name, m.role, m.cargo
+    from public.calendar_members m join auth.users u on u.id = m.user_id left join public.profiles p on p.id = m.user_id
+    order by m.calendar_id, m.role, u.email`);
+  if (!rows.length) console.log('Ninguém tem acesso ainda.');
+  const label = { admin: 'admin', editor: 'editor', reviewer: 'revisor' };
+  rows.forEach(r => console.log(`${r.calendar_id} · ${r.email} · ${r.full_name || '(sem nome)'} · ${label[r.role]}${r.cargo ? ` (${r.cargo})` : ''}`));
+  await c.end();
+}
+
+async function setAccess(email, papel, ...rest) {
+  const role = ROLES[plain(papel)];
+  if (!email || !role) {
+    console.error('Uso: npm run db:acesso -- <e-mail> <admin|editor|revisor|remover> [cargo] [calendário]\nCargos do revisor: Coordenação, Gerência ou Diretoria.');
+    process.exit(1);
+  }
+  let cargo = null, cal = 'loy4biz';
+  for (const v of rest) { if (CARGOS[plain(v)]) cargo = CARGOS[plain(v)]; else if (v) cal = v; }
+  if (role === 'reviewer' && !cargo) { console.error('Para revisor, informe o cargo: Coordenação, Gerência ou Diretoria.'); process.exit(1); }
+  const c = await connect();
+  const { rows: users } = await c.query('select id from auth.users where lower(email) = lower($1)', [email.trim()]);
+  if (!users.length) {
+    console.error(`${email} ainda não entrou no site. Peça para a pessoa abrir o calendário e pedir o link de acesso uma vez; depois rode este comando de novo.`);
+    await c.end(); process.exit(2);
+  }
+  const { rows: cals } = await c.query('select name from public.calendars where id = $1', [cal]);
+  if (!cals.length) { console.error(`O calendário "${cal}" não existe.`); await c.end(); process.exit(2); }
+  if (role === 'remove') {
+    const r = await c.query('delete from public.calendar_members where calendar_id = $1 and user_id = $2', [cal, users[0].id]);
+    console.log(r.rowCount ? `Acesso de ${email} ao calendário ${cals[0].name} removido.` : `${email} não tinha acesso ao calendário ${cals[0].name}.`);
+  } else {
+    await c.query(`insert into public.calendar_members (calendar_id, user_id, role, cargo) values ($1, $2, $3, $4)
+      on conflict (calendar_id, user_id) do update set role = excluded.role, cargo = excluded.cargo`, [cal, users[0].id, role, role === 'reviewer' ? cargo : null]);
+    const label = { admin: 'administração', editor: 'editor', reviewer: `revisor (${cargo})` };
+    console.log(`Pronto: ${email} agora tem acesso ao calendário ${cals[0].name} como ${label[role]}.`);
+  }
+  await c.end();
+}
+
+const [cmd, arg, ...more] = process.argv.slice(2);
 if (cmd === 'status') await status();
 else if (cmd === 'check') await check();
 else if (cmd === 'migrate') await migrate();
 else if (cmd === 'test') await test(arg);
-else { console.log('Uso: node scripts/db.mjs check | migrate | test [arquivo]'); process.exit(1); }
+else if (cmd === 'acessos') await listAccess();
+else if (cmd === 'acesso') await setAccess(arg, ...more);
+else { console.log('Uso: node scripts/db.mjs check | status | migrate | test [arquivo] | acessos | acesso <e-mail> <papel> [cargo]'); process.exit(1); }

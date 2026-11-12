@@ -1,5 +1,0 @@
-{
-  "_comentario": "Valores públicos do Supabase usados pelo site. A chave publishable é feita para ficar visível; o que protege os dados são as permissões no banco. Chaves secretas nunca entram aqui.",
-  "supabaseUrl": "https://jcxyogauuysfprrmunvl.supabase.co",
-  "supabasePublishableKey": "sb_publishable_CGHFPIqSM3M7PsHRKXwvmw_6kXgWZ0b"
-}

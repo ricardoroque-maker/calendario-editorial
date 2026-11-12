@@ -599,6 +599,36 @@ input[aria-invalid="true"]{border-color:var(--st-changes-dot)}
 
 img[data-art]:not([src]),video[data-art]:not([src]){opacity:0}
 
+/* Login por link no e-mail (fora do modo de demonstração) */
+input[type="email"]{font:inherit;font-size:15px;color:var(--ink);background:var(--field);border:1px solid var(--field-line);border-radius:9px;padding:10px 12px;width:100%;min-width:0;height:46px;transition:border-color .18s var(--ease),background-color .18s var(--ease)}
+html[data-auth] .masthead,html[data-auth] .main,html[data-auth] .foot,html[data-auth] #drawer-root,html[data-auth] #modal-root,html[data-auth] #preview{display:none!important}
+.auth{position:relative;z-index:2;min-height:100vh;min-height:100dvh;display:grid;place-items:center;padding:24px 16px calc(24px + env(safe-area-inset-bottom,0px))}
+html:not([data-auth]) .auth{display:none}
+.auth-card{width:min(420px,100%);padding:30px 28px 26px;display:flex;flex-direction:column;gap:20px;animation:auth-in .28s var(--ease)}
+@keyframes auth-in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.auth-brand{display:flex;flex-direction:column;gap:6px}
+.auth-kicker{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.auth-title{margin:0;font-size:24px;line-height:1.2;font-weight:800;color:var(--ink)}
+.auth-lead{margin:0;color:var(--ink-2);font-size:14.5px;line-height:1.55}
+.auth-form{display:flex;flex-direction:column;gap:14px}
+.auth-form .btn,.auth-actions .btn{height:44px;font-size:14.5px}
+.auth-state{display:flex;flex-direction:column;gap:12px;align-items:flex-start}
+.auth-state > .ico{width:34px;height:34px;color:var(--electric-bright)}
+.auth-state h2{margin:0;font-size:19px;line-height:1.25;color:var(--ink)}
+.auth-state p{margin:0;color:var(--ink-2);font-size:14.5px;line-height:1.55}
+.auth-email{font-weight:800;color:var(--ink);overflow-wrap:anywhere}
+.auth-actions{display:flex;flex-wrap:wrap;gap:10px;width:100%;margin-top:4px}
+.auth-actions .btn{flex:1 1 150px}
+.auth-foot{margin:0;font-size:12.5px;color:var(--muted);line-height:1.5}
+.auth-loading{display:flex;align-items:center;gap:12px;color:var(--ink-2);font-size:14.5px}
+.spinner{width:18px;height:18px;flex:0 0 auto;border-radius:50%;border:2px solid var(--glass-line);border-top-color:var(--electric);animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ident-me{display:inline-flex;align-items:center;gap:6px;min-width:0;max-width:280px;height:30px;padding:0 10px 0 8px;border-radius:8px;border:1px solid transparent;background:none;color:var(--mast-ink-2);font:inherit;font-size:13px;cursor:pointer;transition:border-color .18s var(--ease),background-color .18s var(--ease)}
+.ident-me:hover{border-color:var(--mast-ctl-line);background:var(--mast-ctl)}
+.ident-me .ico{width:16px;height:16px;flex:0 0 auto}
+.ident-role{flex:0 0 auto}
+@media (max-width:560px){.ident-role{display:none}.ident-me{max-width:150px}}
+
 /* No backdrop-filter support: keep text on an opaque ground */
 @supports not ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){
   :root{--glass:rgba(8,20,58,.94);--mast:rgba(4,10,34,.96);--pop:#0B1844;--solid:#0A1640}
@@ -619,6 +649,9 @@ img[data-art]:not([src]),video[data-art]:not([src]){opacity:0}
     mode = (t === 'light' || t === 'dark') ? t : (window.matchMedia && matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
   }
   r.setAttribute('data-ui', mode);
+  /* Fora do modo de demonstração (?demo ou arquivo aberto direto), o calendário só aparece depois do login. */
+  var demo = /[?&]demo(=|&|$)/.test(location.search) || location.protocol === 'file:';
+  if (!demo) r.setAttribute('data-auth', 'loading');
 })();
 </script>
 <style>
@@ -630,6 +663,8 @@ img[data-art]:not([src]),video[data-art]:not([src]){opacity:0}
 <div class="backdrop" aria-hidden="true">
   <img class="bg-logo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAzAAAAD6CAYAAAB+k6JUAAAACXBIWXMAAC4jAAAuIwF4pT92AAASoElEQVR4nO3dQY/exnkHcA5XrtoG7TZAgaI5GIF2r730Vn8wCegHaGB/mvQT9NagJwPtrVgJyKXJpUDeNkjsuOIEK8u1bGtX7y6H5DzP/H6AT8lSw+G8M/xzZshSa50AAAAimI8uAAAAwLkEGAAAIAwBBgAACEOAAQAAwhBgAACAMAQYAAAgDAEGAAAIQ4ABAADCEGAAAIAwBBgAACAMAQYAAAhDgAEAAMIQYAAAgDAEGAAAIAwBBgAACEOAAQAAwhBgAACAMAQYAAAgDAEGAAAIQ4ABAADCEGAAAIAwBBgAACAMAQYAAAhDgAEAAMIQYAAAgDAEGAAAIAwBBgAACEOAAQAAwhBgAACAMJ4cXQAA4Gy1wTFKg2MAHMYMDAAAEIYAAwAAhCHAAAAAYQgwAABAGAIMAAAQhgADAACEIcAAAABhCDAAAEAYAgwAABDGk6ML0LEWXzu+5YvHAMAR9y7uQUhJgAEAyPmwVaAhJUvIAABiqY9cKdJqdQkcSoABAIijHhR+oBsCDABADIIHCDAAAEMShghLgAEAGDNwCDGEJMAAAPRts6CxLMvzrY4NWym1Ct938B0YADKOTcaleLa+WdMmCMUMDAAAEIYAAwDQKUu84IcEGAAAIAwBBgAACEOAAQAAwhBgAACAMLxG+W5eowxAb7xGeUxeowzvMAMDAACEIcAAAPRtsxmSZVlebHVs2IolZHezhAyA3lhCNrYtbtq0B8IxAwMAMCbhhZAEGACA8QKH8EJYAgwAQBwtgofwQmgCDABAILcb72utrx7558IL4dnEfzeb+AHojU38PLZNuO6kYQYGACCu8s1/774S+e0Mzf//b8cWEdoyA3M3MzAA9MYMDDA8MzAAAEAYAgwAABCGAAMAAIQhwAAAAGEIMAAAQBgCDAAAEMaTowsApNb6Pe2jvP7Va9wB4A4CDADdu5pPLcPw8nK5vGh4PAB2JMAAW7qdAfC13IdRX++4mk+vN1jubPk0QGA6cQB6ZpwC4DsMDEAk2WcnWp5f+P0vjZeNAZCEAANsrfWNtJvaAcLL9Xz6r6PLAECfBBgAulOn6W+PLgMAfRJggD2EnxHYgZml727cB4D3EmCAiFLd7C/L8vzoMvTi4/nzp8YmAO5Tak11H9CSD8lBWz5qeTeb93feuP9yuYxaTy3qJ+q5A7zhKRewFzdN3MtbxwA4hwADRA0xbnYThcTri9Nvji4DADEIMEBkQkwStU5/cXQZAIhBgAE41vAh7O1bx4xHAJzFgAFwnOHDy1vGIgDOZtCA9Tega/8bSq311dFlSCrk/hcb99PTRwLNPWl/SEivbny8kDei5yqlXDWuw5q9zs4w+vnTn9a/8W9o64AAA/eonf27mQbu23MRYgZn9iWFva/hCP3jHvV+VH35zT/MaO36bAIMxOlgvymXDi2HXtvZLq7m01dHl4FUbVj/CAOxBwa+Fmm9daSysrFlWV5MMXmAFlPv/U/v5QMaKLX6jd+hVcV4GtS3LD+AqO2sDloPdcBz7mr52MvlMmS9NWo7ZaD+Mup1/hBLyMaQtf2u5gkYo8rWiVo+MaZw1/vo4MKjRL5mXgAACVlCxmiyLy2Idm5uKBhl5iSibP1lpnOBoZmBYRQjDVwjz8ZEeBvZSG3xO64vTl+s+XvhZTeZ2+jI/SOkYQaGEWQejO8z6nmPItwNWK3T06PLAG/pHyEwAYbMsi1/yFoHrW/Eez7fnsvW9d6XUqbftysNgfuLlkY7X0jDEjKyMijFW1rF+Ya6lpaO7WLkPlP/CMGYgSGjkQfiqE8bm948LMvyvOXxeLzr+fTv3jzWPddHHUAoAgzZGIQ+LH0dzfP86dSfIb8tVafp79b8vdmXzaXvDx5AXUAQAgyZGHzOp67YZfbl6DJwL/3AD6kTCECAIYseB53yzn896q3Oeq2njHW9C7MvXaud9I09XuMhf68QiU380EZ55P9uoPxhPbWqk4wbc8Ocj30vXasB+sej20/G/oNYtL97CDBEV4N3KuXg88k+SGc/vy59PH/+9KPp2apjmH0Jacu+8Zb+Mb6M9blFu8xYT01ZQgbn22O5wxFLKo5+0kmyAe1Ppmf/subvhZeQ9rhm+kd6o30cRIAhsl06jmVZXhwwaO49UOuEtzNU3V7Np6/qNP3DY/++lPqztiUiYagQcMnct2vfZ7CEjKj2uCl804nM86E5vwx4E9xyHwzBxpWb13/1j+2KwoZKR//+1v2FpWR8n/ByMDMwRLRbeOnIHuXJGhpq9H+71vpqGmDjfpmmX7UrDRvp8c1h+kfCi9LP98IMDHxXbwPzqLMxZmHeUUq5mgZws1z+5OgycC/9I2y0ab+Unn9e/TEDQzRbDk5Reo8ty1mT3gDsfk7LsjyfBnE9n/61wezLL9qViA3oH3P2jTyMNtAJAYZIhJe+l3Gwjf6vc5n+fu0hbpbLT9oUhsYi9jVCDJFE+311QYCB2J1HSTxIR74uty9/+HQaRK3T0zV/77XJbECbIsLqBO30kQQYovDGjzGVoKGsjtI+Vy8dK9Pv25WGwWdevi96+clN+1xBgCEC4WXcWRg63/uy5u9Lmb68eX355+1KBLv0j/rGsbjeHRJgGFWW8JL1fCIPRMPMvqz5YOWtm9eXf9quNDSSYebl+4QYHssD1E4JMIwoa8dhkGY31xen3x5dBoANCS8dE2Agl4wdY8ZzCu364vS7WqcfrTmGjftdynxNMp8b7QkvnRNgGK0T0XnEFGUz/xAzVrVOf7bm74UXknzpfIjfO/RIgKFnwksf52mQ3l9J/NaxL9uVhhHaXCullKsRzpPVtnpdsrbXkAADOTXtKLN9Vb7W+nKLw07JXc+nn68+SJ3+s0lhaMmN1eOl/90PxvUMotTqWo3+JqGOmYFZJ2P91QFmqnqo501mX1otHVtbjpZlOYCP6a2XoW9cew6jXfNz+X0FYQaGUehA4MBvvtCtEfvGEc+ZD68yEF4CEWAYwagdSMbzjrKZP52133wp0/SrdqUBaGee50+PLgMPI8DQKzeXRJJ6+djVfHq98hD/d7Nc/qRRcWiny/a2Ew9D+IZXJgckwEBu6TrQZVleNDycG48dxoqXy+VH7YoC0O8Y8HaMSjf29kaAAULd7M/z/NnUl+yzLytfm1x/1q400O3DEOh1jErJW8gGvSnpXG05QOlMun5zV4ZzSttX9Pq2r17LNWDbzyDq79dbyNaxbCw4MzCkJrykZZAIIHBIGIFr05anwfhN7UiAAUYfpOuAT2/32LgP0KOM49hwBBgy6+6m8CBZ68FbhLYNL2s37mdtd0BcW33rRX+3MwEG4HHSzr6sHRtKmX7ZrihsoMc2B1vzoCoRAQaApm5eX/706DLAmYQ51tB+DvLkqH8Y2L2Tzfj0Ket5HeL64vTbWqcfrTmGpWNAT2qtL0spzzY4tL7uQGZgAL52RBDqagBcG15u31zeqCgATWwUXjiYAANEd8Rm/nSzPlfz6au1x3i5XF60KQ1AE773kpQAA/AwWTfvr1pSbOkY0BnhJTEBBiD57MoeX7YH6IjwkpwAA2RgUHmkj+fPn649htkXoCPCywAEGICBfTQ9+2LlIWzcB2BXAgyQxR5Px1Ltf7maT6/XHsPGfSD57Evppc/mWwIMwHmDYKrwcn1x+vXaMaCU6X/blQhgFXv5BiLAAAw4GNY6/c3aY9y8vvzLNqUBWMW+l8EIMDDIl4inMRhsznA9n36+9hg27gM9WJbl+UaH1sd1rNSa+iHjGqmWiwSj7ttr+UMvg7ahNO1y7WuTjw4vLV77fPQ5rNCiHUY9961E/G2vLXOmNrDVvhc6ZgYGYD+HD4rXF6f/WXkIbx0DeuEp/KBWfXkZYIDBsWR56v32rWOrHlx561iqdo0b4MjsexmYGRgyMzB9TT2sk6n+vHUM4G7CSxACDJCxc49SzlD7Rrx1DN5vWZYXR5dhILd9mX0vgxNgyC7T03OCynBzE3jTO++nb2xonufPji4DjESAoTsZbvboQjc33Eff3DSYfbFxn3Q2fP0u27HvhTe8RjnXaxUzGe21v1sauS330sEdVnfXF6cvap2eZpp98RrlZqLWQSuR63LE1yg3789rra9KKVetj8v2zMBAbr3cwB/idnA6ugxH3yisDS9lmv67XWkA+hnLhJe4BBh6FfHpEJ3pYHAK/8HHm+Xyr9uUhg6N/IAj8uwLbbhugQkwjGDUQXrU8+brpWO/XnuMMk3/3KY0dGy4fsLel3DXyhvH+AF7YO428r6BXrRunKNdC/X3raM6usPqLPM+kczndgY3c+tl6BtH2QNj0z7vZQYGcsowQPNI1xenPwx8g88DmZFgoJmXW/q2BAQYYARHDFiHDZK1Th+t+ftSpl+2Kw29m+f502kcHu6M3SZdryQEGHpWgny9tzcG6IE12bj/+vKnbUpDIOn7RjNNYZh54YMEGHqnwyFiWzqk3Q6+N4SVaq0vp8Q2eKrvt9Ke8MJZBBhGlPlJY+ZzY2Nlmn5xdBk4Tinl2ZSXvhESEWAgD28nGliLjfs3y+UnbUpDYBlv9DOeU0ZbjWHGsYQEGCLYovPJNqBlO5/IStCN+1+1Kw3B6U8+zE1xW9ocD/LkYf93OHSwaN3B1SSDkDXDx7ajw63d+2LfC++hf7xbhnoZgeuUmBkYRhf9ZnaT8i/L8mLKq2QaMK8vfvNPe/+bDEP/SNTvvQgvyZVa/b7v0Kpi/Ija2bKxRrxO6uPx0sxajfjmsRHP+R17D9rqqc86qQnO4ZbwwqOYgSGSLTslSf5bOv+BBL6RZx8Rv5+VPbxkIbzwaAIM0WwdYiIM1FuWU+c/0OyL8MIDjN433vJ7Gas90TEBhnC23p/R+deadfptuBGBXP1Pz2VjH/r1gQgwhDPP82c7fK25t9mY3sqTQYk+cJZp+o8j/l2G1ltftFd53Bz3fb1cn8HYxH83m/j7t1fjPfIajnCORwr/O2+xoX1kAZfR9Xa99Y/HiLqJ3/JnmvAdmPEGmyOVoN/0qDt3ktrMPsLXs/DSVx0GCkMt+85vjrPXude9lyzPs8UqjQgvNGMG5m4qJk4nc8S1ci7xmX2hqZ0CTO384U+mvrHn/jHaDEy09kbnzMCQwRFfV68rOtOebjpH7fx7ugaQqd987zFrra9KKVeP/fuDjNo/trblNe2pvWxFO3wPAQbG7Ux1iuupQyLb7eFPKeWZ/hFoxcJOsjDYPIz6Am7pC35InUDnBBgyMeicRz0B79InfEtdQAACDNkYfO6nfmItY4G96BvUAYQhwJB1EDIQfZc6aU99ks3IbXrkc4dwBBgyMyCR7tXJsLHR2raHOxCQAEN2ow9Oo58/8HCj9BmjnCekI8AwihEHqhHPGWgje/+R/fwgNd+BYSRlkE3cBmaghYx9pv4REjADw4hSDmC3X7rOem6N2P8C4y5FzXAOwFsCDKMqiQa0N+dRSrk6uiAD6Kq9vFwuuyoP6UXsMyOWGfgAAQamqSzL8mKKx8B8vkxLYOBoUfqdKOUEHqjUaly/g4ppL9pg0lsbiFZ/PbF8LJGr+VQHnr1q0ZZL4r4y6nXdu873rKee2kdEo7TpB7GJ/24aDKWTjldbBHruD96UaVmW5/M8f3pkGQYS6XwjlZUgzMDA47X+8ejkt2H2JZnBZ2Ai8hsEmjIDA+0H0/sGawMwMJqH9pX6SeBeAgy0Z/Dthye/0C+/K+BRvIUMAAAIQ4ABuEfQV2wDQFo28QNZWT6WlE38AGMzAwNkJLwAQFICDAAAEIYAA2RjXSwAJCbAAJm0DC+WjwFAhwQYAAAgDAEGyMLsCwAMQIABMrDvBQAGIcAA0TUNL7XWVy2PBwC09aTx8QDOCRul1xmXUsrVVscGANYTYIAjvBtASkdLxex9AYDOCTDA0exfAQDOZg8MsJfeg4rZFwAIQIABAADCsIQMGJ2ZFwAIxAwMAAAQhgADjMzsCwAEI8AAoxJeACAgAQYAAAhDgAFGZPYFAIISYIDRCC8AEJjXKAOjEFwAIAEzMMAe6sH/vvACAEmYgQEyE1wAIBkzMEDGIHH77wkvAJCQGRhgL2XjJWUCyzgWD+AAxlVqPXppOgA83NV8el3K9OVUp9/VafpxmaZ/u1kuPzm6XABsS4ABAADCMAUPAACEIcAAAABhCDAAAEAYAgwAABCGAAMAAIQhwAAAAGEIMAAAQBgCDAAAEIYAAwAAhCHAAAAAYQgwAABAGAIMAAAQhgADAACEIcAAAABhCDAAAEAYAgwAABCGAAMAAIQhwAAAAGEIMAAAQBgCDAAAEIYAAwAAhCHAAAAAYQgwAABAGAIMAAAQhgADAACEIcAAAABhCDAAAEAYAgwAABCGAAMAAExR/BFlby5VH/nn0AAAAABJRU5ErkJggg==" alt="" width="816" height="250" decoding="async">
 </div>
+
+<div class="auth" id="auth" aria-live="polite"></div>
 
 <header class="masthead" id="masthead">
   <div class="wrap mast-inner">
@@ -688,7 +723,7 @@ img[data-art]:not([src]),video[data-art]:not([src]){opacity:0}
 </main>
 
 <footer class="wrap foot">
-  <p>Protótipo para avaliação visual e de interações. Aprovar registra a decisão, a versão, o nome do aprovador e a data e hora. A aprovação não publica nem agenda nada no Instagram ou no LinkedIn.</p>
+  <p id="foot-text">Protótipo para avaliação visual e de interações. Aprovar registra a decisão, a versão, o nome do aprovador e a data e hora. A aprovação não publica nem agenda nada no Instagram ou no LinkedIn.</p>
 </footer>
 
 <div id="preview" class="preview" hidden aria-hidden="true"></div>
@@ -729,6 +764,20 @@ const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
 const toISODate = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 const parseISODate = s => { const [y, m, d] = String(s).split('-').map(Number); return new Date(y, (m || 1) - 1, d || 1); };
 const nf = new Intl.NumberFormat('pt-BR');
+
+/* ---------- Conexão ----------
+   Fora do modo de demonstração, o site usa o Supabase: login por link no e-mail, dados no banco
+   e artes no armazenamento privado. A chave abaixo é a "publishable", pública por natureza:
+   quem decide o que cada pessoa vê e grava são as permissões e as funções do banco. */
+const SUPABASE_URL = 'https://jcxyogauuysfprrmunvl.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_CGHFPIqSM3M7PsHRKXwvmw_6kXgWZ0b';
+const SUPABASE_JS = { src: 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js', integrity: 'sha384-TcHRA3zBbn+Lexh5n+Oil4guNPOS3rjNDpGRAN46u/s/mB2IZ50ceC6TYDU2yvgK' };
+const CONNECTED = document.documentElement.hasAttribute('data-auth');
+const ART_BUCKET = 'artes';
+const REMOTE_MIME = { 'image/png': 'png', 'image/jpeg': 'jpg', 'image/webp': 'webp', 'image/gif': 'gif', 'video/mp4': 'mp4', 'video/quicktime': 'mov', 'video/webm': 'webm' };
+let sb = null;
+const newId = () => (window.crypto && crypto.randomUUID) ? crypto.randomUUID()
+  : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => { const r = crypto.getRandomValues(new Uint8Array(1))[0] & 15; return (c === 'x' ? r : (r & 3) | 8).toString(16); });
 
 const WD_SHORT = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 const WD_LONG = ['domingo', 'segunda-feira', 'terça-feira', 'quarta-feira', 'quinta-feira', 'sexta-feira', 'sábado'];
@@ -822,7 +871,7 @@ const IMPORT_TIMEZONE = 'America/Sao_Paulo';
 const IMPORT_MAX_CHARS = 1000000;
 const IMPORT_POST_FIELDS = ['theme', 'date', 'time', 'network', 'format', 'title', 'subtitle', 'caption', 'visual', 'assetFiles'];
 const FIELD_LIMITS = { theme: 120, title: 160, subtitle: 200 }; /* os mesmos limites do formulário */
-const ART_MAX_BYTES = 60 * 1024 * 1024;
+const ART_MAX_BYTES = 50 * 1024 * 1024;
 const NETWORK_ALIASES = { instagram: 'instagram', linkedin: 'linkedin' };
 const FORMAT_ALIASES = { image: 'image', imagem: 'image', carousel: 'carousel', carrossel: 'carousel', video: 'video', 'vídeo': 'video' };
 const LIMIT_NAMES = { theme: 'tema', title: 'título', subtitle: 'subtítulo' };
@@ -859,7 +908,7 @@ const ImportContract = {
     if (!v || typeof v !== 'object' || Array.isArray(v)) return { error: 'O JSON precisa ser um objeto com schemaVersion, exportId, calendarId, timezone e post.' };
     return { value: v };
   },
-  checkEnvelope(v, calendarId) {
+  checkEnvelope(v, calendarId, calendarName = 'Loy4biz') {
     const errs = [];
     if (!('schemaVersion' in v)) errs.push('Falta o campo "schemaVersion".');
     else if (v.schemaVersion !== IMPORT_SCHEMA_VERSION) errs.push(`Versão de formato não suportada (${JSON.stringify(v.schemaVersion)}). Este calendário aceita "schemaVersion": 1.`);
@@ -867,7 +916,7 @@ const ImportContract = {
     if (!('exportId' in v)) errs.push('Falta o campo "exportId".');
     else if (id.length < 3 || id.length > 120 || /[\s\u0000-\u001f]/.test(id)) errs.push('O "exportId" precisa ser um texto de 3 a 120 caracteres, sem espaços.');
     if (!('calendarId' in v)) errs.push('Falta o campo "calendarId".');
-    else if (v.calendarId !== calendarId) errs.push(`Este arquivo é do calendário "${String(v.calendarId)}", não da Loy4biz. Importe-o no calendário da empresa correta.`);
+    else if (v.calendarId !== calendarId) errs.push(`Este arquivo é do calendário "${String(v.calendarId)}", não da ${calendarName}. Importe-o no calendário da empresa correta.`);
     if (!('timezone' in v)) errs.push('Falta o campo "timezone".');
     else if (v.timezone !== IMPORT_TIMEZONE) errs.push(`Fuso horário não aceito: "${String(v.timezone)}". Use "America/Sao_Paulo" (horário de Brasília).`);
     if (!('post' in v)) errs.push('Falta o objeto "post".');
@@ -1386,6 +1435,118 @@ function createLocalBackend() {
   };
 }
 
+/* ---------- Arquivos no Supabase ----------
+   Bucket privado: cada arquivo fica em <calendário>/<publicação>/<arquivo> e é lido por links
+   temporários (1 hora), pedidos em lote para a tela abrir rápido. */
+const RemoteFiles = (() => {
+  const cache = new Map(); let queue = []; let timer = null;
+  const bucket = () => sb.storage.from(ART_BUCKET);
+  function flush() {
+    const batch = queue; queue = []; timer = null;
+    const paths = [...new Set(batch.map(q => q.path))];
+    bucket().createSignedUrls(paths, 3600).then(({ data, error }) => {
+      const byPath = new Map((data || []).map(d => [d.path, d.signedUrl]));
+      batch.forEach(q => {
+        const u = !error && byPath.get(q.path);
+        if (u) cache.set(q.path, { url: u, until: Date.now() + 50 * 60 * 1000 });
+        q.resolve(u || null);
+      });
+    }, () => batch.forEach(q => q.resolve(null)));
+  }
+  function url(path) {
+    const c = cache.get(path); if (c && c.until > Date.now()) return Promise.resolve(c.url);
+    return new Promise(resolve => { queue.push({ path, resolve }); if (!timer) timer = setTimeout(flush, 0); });
+  }
+  async function upload(path, blob, contentType, name) {
+    let res;
+    try { res = await bucket().upload(path, blob, { contentType, upsert: false, cacheControl: '3600' }); }
+    catch (e) { throw new Error(`Não foi possível enviar “${name}”. Confira a internet e tente de novo.`); }
+    if (res.error) {
+      const m = String(res.error.message || '');
+      if (/size|large|413/i.test(m) || res.error.statusCode === '413') throw new Error(`“${name}” passa do limite de 50 MB.`);
+      if (/mime|type/i.test(m)) throw new Error(`“${name}” está em um formato que o calendário não aceita. Use JPG, PNG, WebP, GIF, MP4, MOV ou WebM.`);
+      throw new Error(`Não foi possível enviar “${name}”. Tente de novo em instantes.`);
+    }
+  }
+  async function remove(paths) {
+    const list = (paths || []).filter(Boolean); if (!list.length) return;
+    list.forEach(p => cache.delete(p));
+    try { await bucket().remove(list); } catch (e) { /* arquivo solto não atrapalha; some na exclusão definitiva */ }
+  }
+  async function removeFolder(folder) {
+    try { const { data } = await bucket().list(folder, { limit: 1000 }); await remove((data || []).map(f => `${folder}/${f.name}`)); } catch (e) {}
+  }
+  return { url, upload, remove, removeFolder };
+})();
+/* Arquivos enviados que não ficaram em nenhuma publicação (formulário cancelado ou falha ao salvar). */
+function discardArt(ids) {
+  const list = (ids || []).filter(Boolean); if (!list.length) return;
+  if (CONNECTED) RemoteFiles.remove(list); else list.forEach(id => FileStore.remove(id));
+}
+
+/* ---------- Backend conectado (Supabase) ----------
+   Mesmas assinaturas do backend local. As regras valem no banco: aqui só chamamos as funções
+   e traduzimos os erros, que já vêm em português com um código. */
+const API_CODES = ['NOT_FOUND', 'FORBIDDEN', 'INVALID', 'NEEDS_ACK', 'INCOMPLETE', 'ALREADY_DECIDED', 'STALE', 'COMMENT_REQUIRED', 'DUPLICATE'];
+/* O banco manda horários com microssegundos; alguns navegadores só leem até milissegundos. */
+function fixTimes(v) {
+  if (typeof v === 'string') return /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{4,}/.test(v) ? v.replace(/(\.\d{3})\d+/, '$1') : v;
+  if (Array.isArray(v)) return v.map(fixTimes);
+  if (v && typeof v === 'object') Object.keys(v).forEach(k => { v[k] = fixTimes(v[k]); });
+  return v;
+}
+function toApiError(error) {
+  const msg = String((error && error.message) || '');
+  if (error && API_CODES.includes(error.hint)) {
+    const e = new ApiError(error.hint, msg);
+    if (error.hint === 'DUPLICATE') { try { e.existing = JSON.parse(error.details); } catch (x) {} }
+    return e;
+  }
+  if (error && (error.code === 'PGRST301' || error.code === 'PGRST303' || /jwt/i.test(msg))) return new ApiError('AUTH', 'Sua sessão terminou. Entre de novo para continuar.');
+  if (error && error.code === '42501') return new ApiError('FORBIDDEN', 'Seu acesso não permite esta ação.');
+  if (/fetch|network|load failed/i.test(msg)) return new ApiError('NETWORK', 'Sem conexão com o servidor. Confira a internet e tente de novo.');
+  console.error('Erro do servidor:', error);
+  return new ApiError('SERVER', 'Não foi possível concluir a ação agora. Tente de novo em instantes.');
+}
+const contentPayload = d => ({
+  theme: d.theme || '', date: d.date || '', time: d.time || '', network: d.network || '', format: d.format || '',
+  title: d.title || '', subtitle: d.subtitle || '', caption: d.caption || '', visual: d.visual || '',
+  art: (d.art || []).filter(a => a && a.path).map(a => ({ path: a.path, name: a.name || '', mime: a.mime || '', w: a.w || 0, h: a.h || 0, size: a.size || 0 }))
+});
+function createSupabaseBackend() {
+  async function call(fn, args) {
+    let res;
+    try { res = await sb.rpc(fn, args); }
+    catch (e) { throw new ApiError('NETWORK', 'Sem conexão com o servidor. Confira a internet e tente de novo.'); }
+    if (res.error) { const e = toApiError(res.error); if (e.code === 'AUTH') onSessionLost(); throw e; }
+    return fixTimes(res.data);
+  }
+  return {
+    persistent: true, remote: true,
+    myAccess: () => call('my_access', {}),
+    setMyName: name => call('set_my_name', { p_name: name }),
+    listPosts: user => call('list_posts', { p_calendar: user.calendarId, p_trashed: false }),
+    listTrash: user => call('list_posts', { p_calendar: user.calendarId, p_trashed: true }),
+    createPost: (user, data, opts = {}) => call('create_post', { p_calendar: user.calendarId, p_id: opts.id || newId(), p_data: contentPayload(data) }),
+    findImport: (user, exportId) => call('find_import', { p_calendar: user.calendarId, p_export_id: String(exportId || '').trim() }),
+    importPost: (user, data, origin, opts = {}) => {
+      const o = origin || {};
+      return call('import_post', { p_calendar: user.calendarId, p_id: opts.id || newId(), p_data: contentPayload(data),
+        p_origin: { schemaVersion: o.schemaVersion, exportId: o.exportId, calendarId: o.calendarId, timezone: o.timezone, sourceName: o.sourceName || '' } });
+    },
+    updatePost: (user, id, data, opts = {}) => call('update_post', { p_id: id, p_data: contentPayload(data), p_ack_invalidation: !!opts.acknowledgeInvalidation, p_ack_withdraw: !!opts.acknowledgeWithdraw }),
+    submit: (user, id) => call('submit_post', { p_id: id }),
+    approve: (user, id, note, expectedVersion, requestId) => call('decide_post', { p_id: id, p_decision: 'approved', p_text: note || null, p_expected_version: expectedVersion ?? null, p_request_id: requestId || null }),
+    requestChanges: (user, id, text, expectedVersion, requestId) => call('decide_post', { p_id: id, p_decision: 'changes', p_text: text, p_expected_version: expectedVersion ?? null, p_request_id: requestId || null }),
+    addComment: (user, id, text, parentId = null, requestId = null) => call('add_comment', { p_id: id, p_text: text, p_parent_id: parentId || null, p_request_id: requestId || null }),
+    trashPost: (user, id) => call('trash_post', { p_id: id }),
+    restorePost: (user, id) => call('restore_post', { p_id: id }),
+    async purgePost(user, id) { const r = await call('purge_post', { p_id: id }); if (r && r.folder) await RemoteFiles.removeFolder(r.folder); return true; },
+    async registerParticipant() { throw new ApiError('FORBIDDEN', 'Com login, o nome e o cargo vêm do seu acesso.'); },
+    async reset() { throw new ApiError('FORBIDDEN', 'Os exemplos só existem no modo de demonstração.'); }
+  };
+}
+
 /* ---------- Ícones ---------- */
 const ICONS = {
   instagram: '<svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="5" fill="none" stroke="currentColor" stroke-width="1.9"/><circle cx="12" cy="12" r="3.9" fill="none" stroke="currentColor" stroke-width="1.9"/><circle cx="17.2" cy="6.8" r="1.15" fill="currentColor"/></svg>',
@@ -1428,6 +1589,7 @@ async function resolveArtUrl(item) {
   if (!item) return null;
   if (item.kind === 'gen') return genArtUrl(item);
   if (item.kind === 'pending') return item.url || null; /* arquivo ainda não salvo (conferência da importação) */
+  if (item.kind === 'remote') return RemoteFiles.url(item.path);
   return FileStore.url(item.id);
 }
 function hydrate(root) {
@@ -1437,13 +1599,13 @@ function hydrate(root) {
     resolveArtUrl(item).then(url => {
       if (!el.isConnected) return;
       if (url) { el.src = el.tagName === 'VIDEO' && !el.controls ? `${url}#t=0.1` : url; }
-      else el.outerHTML = '<span class="missing">Arquivo indisponível neste navegador</span>';
+      else el.outerHTML = `<span class="missing">${CONNECTED ? 'Arquivo indisponível no momento' : 'Arquivo indisponível neste navegador'}</span>`;
     });
   });
 }
 
 /* ---------- Estado ---------- */
-const api = createLocalBackend();
+let api = CONNECTED ? null : createLocalBackend();
 const PREFS_KEY = 'loy4biz.calendario.preferencias.v1';
 const prefs = (() => { try { return JSON.parse(localStorage.getItem(PREFS_KEY)) || {}; } catch (e) { return {}; } })();
 const now0 = new Date();
@@ -1472,6 +1634,7 @@ const state = {
 };
 const MAX_VISIBLE = 2;
 function syncUser() {
+  if (CONNECTED) return; /* com login, quem é a pessoa vem do banco */
   if (state.perspective === 'editor') state.user = EDITOR_USER;
   else if (state.identity && state.identity.mode === 'participant') state.user = reviewerUser(state.identity.participant);
   else state.user = VISITOR_USER;
@@ -1522,6 +1685,12 @@ new MutationObserver(() => { if (!savedMode()) applyMode(systemMode()); }).obser
 
 /* ---------- Render: topo ---------- */
 function renderNotice() {
+  if (CONNECTED) {
+    el.notice.classList.remove('warn');
+    el.noticeText.innerHTML = `${ic('info')}<span>Publicações, comentários e decisões ficam salvos e são compartilhados com a equipe da ${esc(state.user.calendarName || '')}.</span>`;
+    el.noticeBody.textContent = 'Aprovar registra a decisão, a versão, o nome e o cargo de quem aprovou e a data e hora. A aprovação não publica nem agenda nada no Instagram ou no LinkedIn: a postagem continua manual.';
+    return;
+  }
   const ok = api.persistent;
   el.notice.classList.toggle('warn', !ok);
   el.noticeText.innerHTML = ok
@@ -1566,6 +1735,11 @@ function renderFilters() {
 function renderIdent() {
   const u = state.user;
   el.ident.dataset.kind = u.role;
+  if (CONNECTED) {
+    const roleName = u.dbRole === 'admin' ? 'Administração' : u.role === 'editor' ? 'Editor' : (u.cargo || 'Revisor');
+    el.ident.innerHTML = `<button type="button" class="ident-me" data-profile title="Alterar como seu nome aparece">${ic('user')}<span class="ident-name">${esc(u.name)}</span><span class="ident-role">· ${esc(roleName)}</span></button><button type="button" class="ident-btn" data-logout>Sair</button>`;
+    return;
+  }
   if (u.role === 'editor') { el.ident.innerHTML = `<span class="ident-who"><span class="ident-name">${esc(u.name)}</span> · Editor</span>`; return; }
   el.ident.innerHTML = u.role === 'reviewer'
     ? `<span class="ident-who"><span class="ident-name">${esc(u.name)}</span> · ${esc(u.cargo)}</span><button type="button" class="ident-btn" data-ident>Trocar identificação</button>`
@@ -1833,7 +2007,7 @@ function commentHtml(c, p, isReply) {
 function commentsPanel(p) {
   const top = p.comments.filter(c => !c.parentId).sort((a, b) => a.at.localeCompare(b.at));
   return `<div class="cmts">${top.length ? top.map(c => commentHtml(c, p, false)).join('') : '<p class="cmt-empty">Nenhum comentário ainda.</p>'}</div>
-    ${Policy.can(state.user, 'comment', p) ? `<form class="cmt-form" data-form="comment" data-req="${uid('c')}">
+    ${Policy.can(state.user, 'comment', p) ? `<form class="cmt-form" data-form="comment" data-req="${newId()}">
       <label class="field-label" for="cmt-new">Novo comentário sobre a v${p.version}</label>
       <textarea id="cmt-new" rows="3" placeholder="${isEditor() ? 'Explique uma decisão ou responda aos revisores' : 'Escreva sua observação para o editor'}"></textarea>
       <div class="form-foot"><span class="hint">Comentando como ${esc(actorLabel(actorSnapshot(state.user)))}</span><button type="submit" class="btn btn-primary">Comentar</button></div>
@@ -2071,7 +2245,7 @@ async function doSubmit(p) {
   } catch (e) { handleError(e); }
 }
 function approveDialog(p) {
-  const net = NETWORKS[p.network].label;
+  const net = NETWORKS[p.network].label; const reqId = newId();
   openModal({
     title: `Aprovar a v${p.version}?`,
     sub: esc(p.theme),
@@ -2082,13 +2256,13 @@ function approveDialog(p) {
     initialFocus: '[data-modal-ok]',
     onOk: async (layer, btn) => {
       if (btn.dataset.busy) return; btn.dataset.busy = '1'; btn.disabled = true;
-      try { await api.approve(state.user, p.id, $('#apr-note', layer.el).value, p.version); layer.close(); await refresh(); toast(`v${p.version} aprovada. Nada foi publicado ou agendado nas redes.`); $('#dr-title', el.drawerRoot)?.focus(); }
+      try { await api.approve(state.user, p.id, $('#apr-note', layer.el).value, p.version, reqId); layer.close(); await refresh(); toast(`v${p.version} aprovada. Nada foi publicado ou agendado nas redes.`); $('#dr-title', el.drawerRoot)?.focus(); }
       catch (e) { if (e.code === 'ALREADY_DECIDED' || e.code === 'STALE') { layer.close(); await refresh(); } else { delete btn.dataset.busy; btn.disabled = false; } handleError(e); }
     }
   });
 }
 function changesDialog(p) {
-  const reqId = uid('c');
+  const reqId = newId();
   openModal({
     title: `Solicitar ajustes na v${p.version}`,
     sub: esc(p.theme),
@@ -2213,7 +2387,7 @@ function openTrash() {
       const p = state.trash.find(t => t.id === x.dataset.purge); if (!p) return;
       confirmDialog({
         title: 'Excluir definitivamente?', okLabel: 'Excluir definitivamente', okClass: 'btn-warn', focus: '[data-modal-cancel]',
-        body: `<p><strong>${esc(p.theme)}</strong> será apagada deste navegador, com comentários, versões, histórico de aprovação e arquivos. Isso não pode ser desfeito.</p>`,
+        body: `<p><strong>${esc(p.theme)}</strong> será apagada ${CONNECTED ? 'do calendário para todos' : 'deste navegador'}, com comentários, versões, histórico de aprovação e arquivos. Isso não pode ser desfeito.</p>`,
         onOk: async l => { try { await api.purgePost(state.user, p.id); l.close(); await refresh(); update(); toast('Publicação excluída definitivamente.'); } catch (err) { handleError(err); } }
       });
     }
@@ -2250,7 +2424,7 @@ function formHtml(d, post) {
       <div class="ctl"><label for="f-visual">Descrição da proposta visual</label><textarea id="f-visual" rows="4" aria-describedby="f-visual-hint">${esc(d.visual)}</textarea><p class="hint" id="f-visual-hint">Aparece na prévia enquanto não houver arte anexada.</p></div>
       <div class="ctl"><span class="lbl" id="art-lbl">Arquivos da arte ou rascunho</span><p class="hint" id="art-hint"></p>
         <div class="art-list" id="art-list" aria-labelledby="art-lbl"></div>
-        <label class="drop" id="drop">${ic('upload')}<span class="drop-text"><strong>Escolher arquivos</strong><span class="hint">ou arraste para cá. Imagens (JPG, PNG, WebP) ou vídeo (MP4, MOV), até 60 MB cada.</span></span><input type="file" id="f-files" class="sr-only" multiple accept="image/*,video/*"></label>
+        <label class="drop" id="drop">${ic('upload')}<span class="drop-text"><strong>Escolher arquivos</strong><span class="hint">ou arraste para cá. Imagens (JPG, PNG, WebP) ou vídeo (MP4, MOV), até 50 MB cada.</span></span><input type="file" id="f-files" class="sr-only" multiple accept="image/*,video/*"></label>
         <p class="err" id="art-err" hidden></p>
       </div>
     </section>
@@ -2285,10 +2459,10 @@ function updateCounter() {
   c.textContent = `${nf.format(len)} de ${nf.format(net.limit)} caracteres no ${net.label}${len > net.limit ? ' · acima do limite' : ''}`;
   c.classList.toggle('over', len > net.limit);
 }
-/* Limites atuais dos anexos: imagem ou vídeo, até 60 MB cada. */
+/* Limites atuais dos anexos: imagem ou vídeo, até 50 MB cada. */
 function checkArtFile(file) {
   if (!file.type.startsWith('image/') && !file.type.startsWith('video/')) throw new Error(`“${file.name}” não é imagem nem vídeo.`);
-  if (file.size > ART_MAX_BYTES) throw new Error(`“${file.name}” tem mais de 60 MB.`);
+  if (file.size > ART_MAX_BYTES) throw new Error(`“${file.name}” tem mais de 50 MB.`);
 }
 /* Na conferência da importação, o arquivo fica só em memória até "Adicionar ao calendário". */
 const pendingArtItem = (file, assetIndex = null) => ({ id: uid('arq'), kind: 'pending', name: file.name, mime: file.type, size: file.size, file, url: URL.createObjectURL(file), assetIndex });
@@ -2311,6 +2485,13 @@ async function storeArtFile(file) {
       bmp.close && bmp.close();
     } catch (e) { /* mantém o arquivo original */ }
   }
+  if (CONNECTED) {
+    const mime = blob.type || file.type; const ext = REMOTE_MIME[mime];
+    if (!ext) throw new Error(`“${file.name}” está em um formato que o calendário não aceita. Use JPG, PNG, WebP, GIF, MP4, MOV ou WebM.`);
+    const path = `${state.user.calendarId}/${form.postId}/${newId()}.${ext}`;
+    await RemoteFiles.upload(path, blob, mime, file.name);
+    return { id: path, kind: 'remote', path, name: file.name, mime, w, h, size: blob.size };
+  }
   const id = uid('arq'); const where = await FileStore.put(id, blob);
   if (where === 'memory' && await FileStore.available()) { FileStore.remove(id); throw new Error(`Não foi possível guardar “${file.name}” neste navegador. O armazenamento pode estar cheio.`); }
   return { id, kind: 'file', name: file.name, mime: blob.type || file.type, w, h, size: blob.size };
@@ -2332,7 +2513,8 @@ function showFieldErrors(errs) {
   const first = ['theme', 'date', 'time'].find(f => errs[f]); if (first) $(`#f-${first}`, m).focus();
 }
 function closeForm(discard) {
-  if (discard && form) { const kept = new Set((form.post ? form.post.art : []).map(a => a.id)); form.newFiles.filter(id => !kept.has(id)).forEach(id => FileStore.remove(id)); }
+  /* Arquivos enviados neste formulário que não ficaram na publicação (cancelado ou tirados da lista) são apagados. */
+  if (form) { const kept = new Set((discard ? (form.post ? form.post.art : []) : form.art).map(a => a.id)); discardArt(form.newFiles.filter(id => !kept.has(id))); }
   if (form && form.importDraft) form.art.forEach(a => { if (a.kind === 'pending' && a.url) URL.revokeObjectURL(a.url); });
   const l = form && form.layer; form = null; l && l.close();
 }
@@ -2340,7 +2522,7 @@ function openForm({ post = null, date = null, importDraft = null } = {}) {
   if (!Policy.can(state.user, importDraft ? 'import' : post ? 'edit' : 'create', post)) { toast('A visão do aprovador não permite criar ou editar publicações.'); return; }
   const d = importDraft ? { ...importDraft.data, art: [] }
     : post ? clone(post) : { theme: '', date: date || defaultNewDate(), time: '10:00', network: 'instagram', format: 'image', title: '', subtitle: '', caption: '', visual: '', art: [] };
-  form = { post, art: importDraft ? importDraft.art : clone(d.art || []), newFiles: [], layer: null, initial: '', importDraft };
+  form = { post, postId: post ? post.id : newId(), art: importDraft ? importDraft.art : clone(d.art || []), newFiles: [], layer: null, initial: '', importDraft };
   form.layer = openModal({
     wide: true,
     title: importDraft ? 'Conferir importação' : post ? 'Editar publicação' : 'Nova publicação',
@@ -2384,7 +2566,7 @@ async function saveForm() {
   showFieldErrors(errs); if (Object.keys(errs).length) return;
   try {
     if (!form.post) {
-      const p = await api.createPost(state.user, data); closeForm(false);
+      const p = await api.createPost(state.user, data, { id: form.postId }); closeForm(false);
       const d = parseISODate(p.date); state.month = { y: d.getFullYear(), m: d.getMonth() };
       await refresh(); toast('Rascunho criado.'); openPost(p.id); return;
     }
@@ -2466,7 +2648,7 @@ function openImport() {
       </section>
       <section class="imp-sec" aria-labelledby="imp-s2"><h3 class="fsec-title" id="imp-s2">2. Arquivos da arte</h3>
         <p class="hint">Anexe as imagens ou os vídeos citados em “assetFiles”, com os mesmos nomes. A ordem de assetFiles é mantida. Links no JSON não são baixados.</p>
-        <label class="drop" id="imp-drop">${ic('upload')}<span class="drop-text"><strong>Escolher arquivos</strong><span class="hint">ou arraste para cá. Imagens ou vídeos, até 60 MB cada.</span></span><input type="file" id="imp-assets" class="sr-only" multiple accept="image/*,video/*"></label>
+        <label class="drop" id="imp-drop">${ic('upload')}<span class="drop-text"><strong>Escolher arquivos</strong><span class="hint">ou arraste para cá. Imagens ou vídeos, até 50 MB cada.</span></span><input type="file" id="imp-assets" class="sr-only" multiple accept="image/*,video/*"></label>
         <ul class="imp-files" id="imp-files" hidden></ul>
       </section>
       <div class="imp-errors" id="imp-errors" role="alert" hidden></div>
@@ -2507,7 +2689,7 @@ async function checkImport(layer, imp, btn) {
   const m = layer.el; if (btn.disabled) return;
   const parsed = ImportContract.parse($('#imp-json', m).value);
   if (parsed.error) { showImpErrors(m, [parsed.error]); return; }
-  const env = ImportContract.checkEnvelope(parsed.value, CALENDAR_ID);
+  const env = ImportContract.checkEnvelope(parsed.value, state.user.calendarId, state.user.calendarName || 'Loy4biz');
   if (env.length) { showImpErrors(m, env); return; }
   const exportId = parsed.value.exportId.trim();
   btn.disabled = true;
@@ -2585,11 +2767,11 @@ async function saveImport() {
       if (a.kind !== 'pending') { art.push(a); continue; }
       const it = await storeArtFile(a.file); stored.push(it.id); art.push(it);
     }
-    const p = await api.importPost(state.user, { ...data, art }, dr.origin);
+    const p = await api.importPost(state.user, { ...data, art }, dr.origin, { id: form.postId });
     closeForm(false);
     await afterImport(p);
   } catch (e) {
-    stored.forEach(id => FileStore.remove(id)); /* sem anexos soltos se a gravação falhar */
+    discardArt(stored); /* sem anexos soltos se a gravação falhar */
     if (form) { form.busy = false; btn.disabled = false; btn.textContent = 'Adicionar ao calendário'; }
     const msg = e.code === 'DUPLICATE' && e.existing ? duplicateMessage(e.existing)
       : e.code === 'SAVE_FAILED' ? e.message : `${e.message || 'Não foi possível adicionar.'} Nada foi salvo; o conteúdo continua aqui para tentar de novo.`;
@@ -2622,7 +2804,11 @@ el.roleSwitch.addEventListener('click', e => {
   toast(state.perspective === 'editor' ? 'Visão do editor: Ana Ribeiro (simulação).'
     : `Visão do aprovador: ${state.user.role === 'reviewer' ? `${state.user.name} · ${state.user.cargo}` : 'somente visualização'}.`);
 });
-el.ident.addEventListener('click', e => { if (e.target.closest('[data-ident]')) openIdentityModal(); });
+el.ident.addEventListener('click', e => {
+  if (e.target.closest('[data-ident]')) openIdentityModal();
+  else if (e.target.closest('[data-profile]')) openNameDialog(false);
+  else if (e.target.closest('[data-logout]')) logout();
+});
 el.trashBtn.addEventListener('click', openTrash);
 el.importBtn.addEventListener('click', openImport);
 el.reset.addEventListener('click', () => confirmDialog({
@@ -2689,7 +2875,7 @@ el.drawerRoot.addEventListener('click', e => {
   const rep = e.target.closest('[data-reply]');
   if (rep) {
     const slot = $(`[data-reply-slot="${rep.dataset.reply}"]`, el.drawerRoot); if (!slot) return;
-    if (!slot.innerHTML) slot.innerHTML = `<form class="reply-form" data-form="reply" data-req="${uid('c')}" data-parent="${esc(rep.dataset.reply)}"><label class="sr-only" for="reply-${esc(rep.dataset.reply)}">Resposta</label><textarea id="reply-${esc(rep.dataset.reply)}" rows="3" placeholder="Escreva sua resposta"></textarea><div class="btn-row"><button type="submit" class="btn btn-primary">Responder</button><button type="button" class="btn" data-cancel-reply>Cancelar</button></div></form>`;
+    if (!slot.innerHTML) slot.innerHTML = `<form class="reply-form" data-form="reply" data-req="${newId()}" data-parent="${esc(rep.dataset.reply)}"><label class="sr-only" for="reply-${esc(rep.dataset.reply)}">Resposta</label><textarea id="reply-${esc(rep.dataset.reply)}" rows="3" placeholder="Escreva sua resposta"></textarea><div class="btn-row"><button type="submit" class="btn btn-primary">Responder</button><button type="button" class="btn" data-cancel-reply>Cancelar</button></div></form>`;
     $('textarea', slot).focus(); return;
   }
   const cr = e.target.closest('[data-cancel-reply]'); if (cr) { const slot = cr.closest('[data-reply-slot]'); const id = slot.dataset.replySlot; slot.innerHTML = ''; $(`[data-reply="${id}"]`, el.drawerRoot)?.focus(); }
@@ -2728,7 +2914,207 @@ const setMast = () => document.documentElement.style.setProperty('--mast-h', `${
 if ('ResizeObserver' in window) new ResizeObserver(setMast).observe(el.masthead);
 setMast();
 
-refresh().then(() => { if (state.perspective === 'approver' && !state.identity) openIdentityModal(); });
+/* ---------- Login por link no e-mail ---------- */
+const authEl = $('#auth');
+const EMAIL_KEY = 'calendario-editorial.ultimo-email';
+const CAL_KEY = 'calendario-editorial.calendario';
+let entered = false, sessionLost = false, resendTimer = null;
+const isEmail = v => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
+const lastEmail = () => { try { return localStorage.getItem(EMAIL_KEY) || ''; } catch (e) { return ''; } };
+function gateBody(view, d) {
+  switch (view) {
+    case 'loading':
+      return `<div class="auth-loading"><span class="spinner" aria-hidden="true"></span><span>${esc(d.msg || 'Abrindo o calendário…')}</span></div>`;
+    case 'login':
+      return `<p class="auth-lead">Entre com o e-mail que recebeu acesso. Enviamos um link para você entrar, sem senha.</p>
+        ${d.notice ? callout('changes', 'alert', `<span>${esc(d.notice)}</span>`) : ''}
+        <form class="auth-form" id="auth-form" novalidate>
+          <div class="ctl" data-field="email"><label for="auth-email">E-mail</label>
+            <input type="email" id="auth-email" value="${esc(d.email || lastEmail())}" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" placeholder="nome@empresa.com.br" aria-describedby="auth-err" required>
+            <p class="err" id="auth-err" hidden></p></div>
+          <button type="submit" class="btn btn-primary">Receber link de acesso</button>
+        </form>
+        <p class="auth-foot">Só entra quem foi convidado para o calendário. Precisa de acesso? Fale com a equipe da Supply Marketing.</p>`;
+    case 'sent':
+      return `<div class="auth-state">${ic('check')}<h2>Confira seu e-mail</h2>
+        <p>Enviamos um link de acesso para <span class="auth-email">${esc(d.email)}</span>. Abra a mensagem e clique no link para entrar.</p>
+        <p class="auth-foot">O e-mail chega em inglês, com assunto parecido com “Magic Link” ou “Confirm your signup”. O link vale por 1 hora. Não chegou em alguns minutos? Confira o spam.</p>
+        <div class="auth-actions"><button type="button" class="btn" data-auth-back>Usar outro e-mail</button><button type="button" class="btn" data-auth-resend disabled>Reenviar</button></div></div>`;
+    case 'noaccess':
+      return `<div class="auth-state">${ic('info')}<h2>Falta liberar seu acesso</h2>
+        <p>Você entrou como <span class="auth-email">${esc(d.email)}</span>, mas este e-mail ainda não tem acesso a nenhum calendário.</p>
+        <p class="auth-foot">Peça para a equipe da Supply Marketing liberar seu acesso. Depois, toque em “Verificar de novo”.</p>
+        <div class="auth-actions"><button type="button" class="btn btn-primary" data-auth-retry>Verificar de novo</button><button type="button" class="btn" data-auth-logout>Sair</button></div></div>`;
+    default:
+      return `<div class="auth-state">${ic('alert')}<h2>Não foi possível abrir o calendário</h2>
+        <p>${esc(d.msg || 'Tente de novo em instantes.')}</p>
+        <div class="auth-actions"><button type="button" class="btn btn-primary" data-auth-retry>Tentar de novo</button></div></div>`;
+  }
+}
+const Gate = {
+  show(view, d = {}) {
+    clearInterval(resendTimer);
+    rootEl.setAttribute('data-auth', view); hidePreview();
+    authEl.innerHTML = `<section class="panel auth-card" aria-labelledby="auth-title">
+      <div class="auth-brand"><span class="auth-kicker">Supply Marketing</span><h1 class="auth-title" id="auth-title">Calendário editorial</h1></div>
+      ${gateBody(view, d)}</section>`;
+    wireGate(view, d);
+  },
+  hide() { clearInterval(resendTimer); rootEl.removeAttribute('data-auth'); authEl.innerHTML = ''; }
+};
+function otpErrorMessage(error) {
+  const msg = String((error && error.message) || ''), code = (error && error.code) || '';
+  const wait = /after (\d+) seconds?/i.exec(msg);
+  if (wait) return `Por segurança, aguarde ${wait[1]} segundos para pedir outro link.`;
+  if (code === 'over_email_send_rate_limit' || code === 'over_request_rate_limit' || (error && error.status === 429)) return 'Muitos links pedidos em pouco tempo. Aguarde alguns minutos e tente de novo.';
+  if (code === 'email_address_not_authorized' || /not authorized/i.test(msg)) return 'Este e-mail ainda não pode receber o link de acesso. Fale com a equipe da Supply Marketing.';
+  if (code === 'signup_disabled' || code === 'otp_disabled' || /signups? not allowed/i.test(msg)) return 'Este e-mail não foi convidado para o calendário. Fale com a equipe da Supply Marketing.';
+  if (code === 'email_address_invalid' || /invalid/i.test(msg)) return 'Confira o e-mail digitado.';
+  if (/fetch|network|load failed/i.test(msg)) return 'Sem conexão. Confira a internet e tente de novo.';
+  return 'Não foi possível enviar o link agora. Tente de novo em instantes.';
+}
+async function sendLink(email) {
+  let res;
+  try { res = await sb.auth.signInWithOtp({ email, options: { emailRedirectTo: location.origin + location.pathname, shouldCreateUser: true } }); }
+  catch (e) { throw new Error(otpErrorMessage(e)); }
+  if (res.error) throw new Error(otpErrorMessage(res.error));
+  try { localStorage.setItem(EMAIL_KEY, email); } catch (e) {}
+}
+function wireGate(view, d) {
+  const card = $('.auth-card', authEl);
+  if (view === 'login') {
+    const f = $('#auth-form', card), input = $('#auth-email', card), err = $('#auth-err', card), btn = $('button[type="submit"]', f);
+    const setErr = m => { err.hidden = !m; err.textContent = m || ''; $('[data-field="email"]', f).classList.toggle('invalid', !!m); if (m) input.setAttribute('aria-invalid', 'true'); else input.removeAttribute('aria-invalid'); };
+    input.addEventListener('input', () => setErr(''));
+    f.addEventListener('submit', async e => {
+      e.preventDefault(); if (btn.disabled) return;
+      const email = input.value.trim().toLowerCase();
+      if (!isEmail(email)) { setErr('Digite um e-mail válido, como nome@empresa.com.br.'); input.focus(); return; }
+      btn.disabled = true; btn.textContent = 'Enviando…';
+      try { await sendLink(email); Gate.show('sent', { email }); }
+      catch (x) { btn.disabled = false; btn.textContent = 'Receber link de acesso'; setErr(x.message); input.focus(); }
+    });
+    requestAnimationFrame(() => input.focus());
+  }
+  if (view === 'sent') {
+    const resend = $('[data-auth-resend]', card); let left = 60;
+    const tick = () => { if (left > 0) { resend.textContent = `Reenviar em ${left} s`; resend.disabled = true; left--; } else { clearInterval(resendTimer); resend.textContent = 'Reenviar'; resend.disabled = false; } };
+    tick(); resendTimer = setInterval(tick, 1000);
+    $('[data-auth-back]', card).addEventListener('click', () => Gate.show('login', { email: d.email }));
+    resend.addEventListener('click', async () => {
+      resend.disabled = true; resend.textContent = 'Enviando…';
+      try { await sendLink(d.email); toast('Enviamos outro link. Use o mais recente.'); left = 60; tick(); clearInterval(resendTimer); resendTimer = setInterval(tick, 1000); }
+      catch (x) { resend.disabled = false; resend.textContent = 'Reenviar'; toast(x.message); }
+    });
+  }
+  const retry = $('[data-auth-retry]', card); if (retry) retry.addEventListener('click', () => location.reload());
+  const out = $('[data-auth-logout]', card); if (out) out.addEventListener('click', logout);
+}
+function readAuthRedirect() {
+  const h = new URLSearchParams(location.hash.replace(/^#/, '')), q = new URLSearchParams(location.search);
+  const code = h.get('error_code') || q.get('error_code'), err = h.get('error') || q.get('error');
+  if (!code && !err) return null;
+  return code === 'otp_expired' ? 'Este link de acesso expirou ou já foi usado. Peça um novo abaixo.' : 'Não foi possível entrar com este link. Peça um novo abaixo.';
+}
+function cleanAuthUrl() {
+  if (/access_token|refresh_token|error/.test(location.hash) || /error|code=/.test(location.search)) history.replaceState(null, '', location.pathname);
+}
+function loadSupabase() {
+  if (window.supabase && window.supabase.createClient) return Promise.resolve();
+  return new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = SUPABASE_JS.src; s.integrity = SUPABASE_JS.integrity; s.crossOrigin = 'anonymous';
+    s.onload = resolve; s.onerror = reject; document.head.appendChild(s);
+  });
+}
+function onSessionLost() {
+  if (!CONNECTED || sessionLost) return; sessionLost = true; entered = false;
+  if (state.open) closeDrawer();
+  Gate.show('login', { notice: 'Sua sessão terminou. Entre de novo para continuar.' });
+}
+async function logout() {
+  try { await sb.auth.signOut({ scope: 'local' }); } catch (e) {}
+  location.replace(location.pathname);
+}
+function applyConnectedChrome() {
+  const roleBox = el.roleSwitch.closest('.role'); if (roleBox) roleBox.hidden = true;
+  el.reset.hidden = true;
+  document.title = `Calendário Editorial ${state.user.calendarName}`;
+  const h1 = $('main h1.sr-only'); if (h1) h1.textContent = document.title;
+  const foot = $('#foot-text'); if (foot) foot.textContent = 'Aprovar registra a decisão, a versão, o nome e o cargo de quem aprovou e a data e hora. A aprovação não publica nem agenda nada no Instagram ou no LinkedIn.';
+}
+function openNameDialog(first = false) {
+  const layer = openModal({
+    title: first ? 'Como seu nome deve aparecer?' : 'Seu nome no calendário',
+    body: `<p>${first ? 'Seu nome aparece nos comentários, nos pedidos de ajuste e nas aprovações.' : 'O nome novo vale para as próximas ações. Comentários e decisões já registrados mantêm o nome da época.'}</p>
+      <form id="name-form" class="ident-form" novalidate><div class="ctl" data-field="name"><label for="me-name">Nome completo</label>
+        <input type="text" id="me-name" value="${esc(first ? '' : state.user.name)}" autocomplete="name" maxlength="80" aria-describedby="me-name-err"><p class="err" id="me-name-err" hidden></p></div></form>`,
+    foot: `<button type="button" class="btn" data-modal-cancel>${first ? 'Agora não' : 'Cancelar'}</button><button type="submit" form="name-form" class="btn btn-primary">Salvar nome</button>`,
+    initialFocus: '#me-name'
+  });
+  const m = layer.el, input = $('#me-name', m), err = $('#me-name-err', m); let busy = false;
+  const setErr = msg => { err.hidden = !msg; err.textContent = msg || ''; $('[data-field="name"]', m).classList.toggle('invalid', !!msg); if (msg) input.setAttribute('aria-invalid', 'true'); else input.removeAttribute('aria-invalid'); };
+  input.addEventListener('input', () => setErr(''));
+  $('#name-form', m).addEventListener('submit', async e => {
+    e.preventDefault(); if (busy) return;
+    const name = input.value.replace(/\s+/g, ' ').trim();
+    if (!name) { setErr('Informe seu nome.'); input.focus(); return; }
+    busy = true;
+    try { const acc = await api.setMyName(name); state.user.name = acc.name; layer.close(); renderAll(); toast(`Pronto. Você aparece como ${acc.name}.`); }
+    catch (x) { busy = false; setErr(x.message); }
+  });
+}
+async function enter(session) {
+  api = createSupabaseBackend();
+  const email = (session.user && session.user.email) || '';
+  let access;
+  try { access = await api.myAccess(); }
+  catch (e) { if (e.code !== 'AUTH') Gate.show('error', { msg: e.message }); return; }
+  const cals = access.calendars || [];
+  if (!cals.length) { Gate.show('noaccess', { email }); return; }
+  let saved = null; try { saved = localStorage.getItem(CAL_KEY); } catch (e) {}
+  const cal = cals.find(c => c.id === saved) || cals[0];
+  state.user = { id: access.userId, email, name: String(access.name || '').trim() || email.split('@')[0], role: cal.role === 'reviewer' ? 'reviewer' : 'editor', dbRole: cal.role, cargo: cal.cargo || null, calendarId: cal.id, calendarName: cal.name };
+  try {
+    state.posts = await api.listPosts(state.user);
+    state.trash = Policy.can(state.user, 'viewTrash') ? await api.listTrash(state.user) : [];
+  } catch (e) { if (e.code !== 'AUTH') Gate.show('error', { msg: e.message }); return; }
+  entered = true; Gate.hide(); applyConnectedChrome(); renderAll(); setMast();
+  /* Na primeira vez, o nome é só o começo do e-mail: pergunta como a pessoa quer aparecer. */
+  let asked = false; try { asked = sessionStorage.getItem('calendario-editorial.nome-perguntado') === '1'; sessionStorage.setItem('calendario-editorial.nome-perguntado', '1'); } catch (e) {}
+  if (!asked && (!access.name || access.name === email.split('@')[0])) openNameDialog(true);
+}
+/* Com login, outra pessoa pode ter mudado algo: atualiza ao voltar para a aba e a cada minuto,
+   só quando nada está aberto (para não apagar o que está sendo digitado). */
+let softBusy = false;
+async function softRefresh() {
+  if (!entered || softBusy || document.hidden || layers.length || state.open || form || state.expandedDay) return;
+  softBusy = true;
+  try {
+    const posts = await api.listPosts(state.user);
+    const trash = Policy.can(state.user, 'viewTrash') ? await api.listTrash(state.user) : [];
+    if (layers.length || state.open || form || state.expandedDay) return;
+    if (JSON.stringify(posts) !== JSON.stringify(state.posts) || JSON.stringify(trash) !== JSON.stringify(state.trash)) { state.posts = posts; state.trash = trash; renderAll(); }
+  } catch (e) { /* a próxima tentativa resolve */ }
+  finally { softBusy = false; }
+}
+async function boot() {
+  if (!CONNECTED) { await refresh(); if (state.perspective === 'approver' && !state.identity) openIdentityModal(); return; }
+  Gate.show('loading');
+  const redirectNotice = readAuthRedirect();
+  try { await loadSupabase(); }
+  catch (e) { Gate.show('error', { msg: 'Não foi possível carregar o login. Confira a internet e recarregue a página.' }); return; }
+  sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, { auth: { flowType: 'implicit', persistSession: true, autoRefreshToken: true, detectSessionInUrl: true, storageKey: 'calendario-editorial.sessao' } });
+  sb.auth.onAuthStateChange(event => { if (event === 'SIGNED_OUT' && entered) setTimeout(onSessionLost, 0); });
+  let session = null;
+  try { session = (await sb.auth.getSession()).data.session; } catch (e) { session = null; }
+  cleanAuthUrl();
+  if (!session) { Gate.show('login', { notice: redirectNotice }); return; }
+  await enter(session);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) softRefresh(); });
+  setInterval(softRefresh, 60000);
+}
+boot();
 })();
 </script>
 </body>
